@@ -238,6 +238,32 @@ Models are downloaded automatically on first use and cached locally.
 
 ---
 
+## Configuration
+
+### Port
+
+By default the server runs on port **8000**. Override it with the `PORT` environment variable:
+
+```bash
+# macOS / Linux
+PORT=9000 python main.py
+
+# Windows (PowerShell)
+$env:PORT = "9000"; python main.py
+
+# Windows (Command Prompt)
+set PORT=9000 && python main.py
+```
+
+You can also export it for the whole shell session:
+
+```bash
+export PORT=9000   # macOS / Linux
+python main.py
+```
+
+---
+
 ## Development
 
 Run backend and frontend separately for hot reload:
@@ -250,6 +276,13 @@ uvicorn backend.app:app --reload --port 8000
 # Terminal 2 — frontend
 cd frontend
 npm run dev
+```
+
+If you changed the port, pass `PORT` to both:
+
+```bash
+PORT=9000 uvicorn backend.app:app --reload --port 9000
+PORT=9000 npm run dev   # (inside frontend/)
 ```
 
 Frontend dev server runs at `http://localhost:5173` and proxies `/api` to the backend.
