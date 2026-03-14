@@ -32,6 +32,18 @@ def health():
     return {"status": "ok"}
 
 
+def _serve_spa() -> FileResponse | dict:
+    index = DIST_DIR / "index.html"
+    if index.exists():
+        return FileResponse(str(index))
+    return {"error": "Frontend not built. Run: make build"}
+
+
+@app.get("/", include_in_schema=False)
+def root():
+    return _serve_spa()
+
+
 @app.get("/{full_path:path}", include_in_schema=False)
 def spa_fallback(full_path: str):
     # Serve static file if it exists
