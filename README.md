@@ -191,9 +191,10 @@ This branch includes experimental support for [mlx-whisper](https://github.com/m
 
 ```bash
 pip install mlx-whisper
+make run
 ```
 
-That's it. Restart the app — Claudescribe detects `mlx-whisper` automatically and uses the Metal GPU. No other config needed.
+That's it — Claudescribe detects `mlx-whisper` automatically and uses the Metal GPU. No other config needed.
 
 **What to expect:**
 - Faster transcription, especially on `large-v3` and `turbo` models
