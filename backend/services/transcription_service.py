@@ -5,6 +5,7 @@ from typing import Optional
 
 from faster_whisper import WhisperModel
 
+from backend.config import detect_device
 from backend.services import storage_service
 
 # In-memory job progress tracking
@@ -57,8 +58,9 @@ def _run(transcription_id: str, audio_path: Path, model_name: str) -> None:
         existing["status"] = "processing"
         storage_service.write_transcription(transcription_id, existing)
 
-        # Load model
-        model = WhisperModel(model_name, device="cpu", compute_type="int8")
+        # Load model — device/compute_type auto-detected from available hardware
+        device, compute_type = detect_device()
+        model = WhisperModel(model_name, device=device, compute_type=compute_type)
 
         # Transcribe with word timestamps
         segments_iter, info = model.transcribe(str(audio_path), word_timestamps=True)

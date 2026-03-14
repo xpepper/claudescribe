@@ -177,6 +177,52 @@ Your browser will open automatically at `http://localhost:8000`.
 
 ---
 
+## Hardware acceleration
+
+Claudescribe detects your hardware automatically and picks the best settings. No configuration needed.
+
+### Apple Silicon (M1 / M2 / M3 / M4)
+
+**Nothing extra to install.** CTranslate2 (the engine behind faster-whisper) ships with an ARM64-optimised build that uses Apple's Accelerate framework automatically. You'll get significantly faster transcription than on an Intel Mac with no extra steps.
+
+### NVIDIA GPU (Windows or Linux)
+
+If you have an NVIDIA GPU, Claudescribe will use it automatically — but you need the CUDA runtime and cuDNN installed first.
+
+**Requirements:**
+- NVIDIA driver 525 or later (check: `nvidia-smi`)
+- CUDA 12.3 or later
+- cuDNN 9.x
+
+**Step-by-step on Windows:**
+
+1. Check your driver version:
+   ```powershell
+   nvidia-smi
+   ```
+   The top-right corner shows the maximum CUDA version your driver supports. It must be **12.3 or higher**. If it's lower, update your driver from [nvidia.com/drivers](https://www.nvidia.com/drivers/).
+
+2. Install the **CUDA Toolkit 12.x** from [developer.nvidia.com/cuda-downloads](https://developer.nvidia.com/cuda-downloads). Select: Windows → x86_64 → your Windows version → exe (local).
+
+3. Install **cuDNN 9.x** from [developer.nvidia.com/cudnn](https://developer.nvidia.com/cudnn) (free NVIDIA account required). Download the zip for CUDA 12.x, then copy its `bin/`, `include/`, and `lib/` folders into your CUDA installation directory (typically `C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.x\`).
+
+4. Restart your terminal, then verify:
+   ```powershell
+   nvcc --version   # should show 12.x
+   ```
+
+5. Install Claudescribe as normal. When you start transcribing, the GPU is picked up automatically. You can confirm in the terminal output — faster-whisper will log the device it's using.
+
+**Expected speedup:** 5–10× faster than CPU for large models, depending on your GPU.
+
+> **Not sure it's working?** Run a transcription and watch the GPU usage in Task Manager → Performance → GPU. It should spike while transcription runs.
+
+### Intel / AMD CPU (no GPU)
+
+The app runs on CPU by default using optimised BLAS libraries. On modern multi-core CPUs this is perfectly usable for the `tiny`, `base`, and `turbo` models.
+
+---
+
 ## Model sizes
 
 | Model | Speed | Accuracy | Download size |
