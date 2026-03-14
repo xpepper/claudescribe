@@ -24,6 +24,8 @@ def write_transcription(transcription_id: str, data: dict) -> None:
     target = DATA_DIR / transcription_id / "transcription.json"
     with tempfile.NamedTemporaryFile("w", dir=target.parent, delete=False, suffix=".tmp") as f:
         json.dump(data, f, indent=2)
+        f.flush()
+        os.fsync(f.fileno())
         tmp_path = f.name
     os.replace(tmp_path, target)
 
@@ -49,7 +51,7 @@ def list_transcriptions() -> list[dict]:
 
 def delete_transcription(transcription_id: str) -> None:
     path = DATA_DIR / transcription_id
-    shutil.rmtree(path)
+    shutil.rmtree(path, ignore_errors=True)
 
 
 def get_audio_path(transcription_id: str) -> Optional[Path]:
