@@ -47,7 +47,7 @@ npm --version
 ### 3. Clone the repository
 
 ```bash
-git clone https://github.com/your-username/claudescribe.git
+git clone https://github.com/xpepper/claudescribe.git
 cd claudescribe
 ```
 
@@ -110,7 +110,7 @@ npm --version
 If you have Git installed:
 
 ```powershell
-git clone https://github.com/your-username/claudescribe.git
+git clone https://github.com/xpepper/claudescribe.git
 cd claudescribe
 ```
 
