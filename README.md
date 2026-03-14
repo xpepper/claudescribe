@@ -6,6 +6,28 @@ No cloud. No API keys. Runs entirely on your machine.
 
 ---
 
+## Built with Claude Code
+
+This project was designed and implemented entirely through [Claude Code](https://claude.ai/code) using **Claude Sonnet 4.6**, Anthropic's CLI coding agent.
+
+### How it was built
+
+The implementation followed a structured, plan-driven workflow:
+
+1. **Brainstorming session** — requirements, architecture, and key technical decisions were explored interactively before any code was written. Decisions like using `faster-whisper` over the official Whisper library (4× faster, lazy segment generator for real-time progress, native word timestamps), persistent JSON storage, and the binary-search word-sync approach were all arrived at collaboratively.
+
+2. **Written implementation plan** — the outcome of the brainstorm was a detailed 9-step plan covering every file, data format, API endpoint, and frontend component, before a single line of code was touched.
+
+3. **Subagent-driven development** — each of the 9 steps was handed to a fresh Claude subagent with full context from the plan. A separate spec-compliance reviewer and code quality reviewer subagent ran after each step, catching issues (missing `fsync` before atomic rename, stale closure in polling hook, etc.) before moving on.
+
+4. **Git worktree isolation** — all implementation work happened in an isolated `.worktrees/main` branch, keeping `main` clean until the full feature was reviewed and merged.
+
+5. **TDD throughout** — tests were written alongside each backend module. The 27-test suite covers storage, transcription service bookkeeping, and all API endpoints including edge cases.
+
+The full implementation — 38 files, ~3900 lines of Python, TypeScript, CSS, and config — was produced across a single Claude Code session, with the human role limited to reviewing decisions, answering clarifying questions, and verifying the running app.
+
+---
+
 ## Requirements
 
 - Python 3.10 or later
