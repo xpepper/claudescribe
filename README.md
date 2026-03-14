@@ -245,7 +245,10 @@ Models are downloaded automatically on first use and cached locally.
 By default the server runs on port **8000**. Override it with the `PORT` environment variable:
 
 ```bash
-# macOS / Linux
+# macOS / Linux — with make
+PORT=9000 make run
+
+# macOS / Linux — without make
 PORT=9000 python main.py
 
 # Windows (PowerShell)
@@ -255,11 +258,11 @@ $env:PORT = "9000"; python main.py
 set PORT=9000 && python main.py
 ```
 
-You can also export it for the whole shell session:
+You can also export it for the whole shell session so you don't have to repeat it:
 
 ```bash
 export PORT=9000   # macOS / Linux
-python main.py
+make run
 ```
 
 ---

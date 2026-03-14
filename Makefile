@@ -11,5 +11,5 @@ run: build
 	python main.py
 
 dev:
-	@echo "Start backend: uvicorn backend.app:app --reload --port 8000"
-	@echo "Start frontend: cd frontend && npm run dev"
+	@echo "Start backend: PORT=$(PORT) uvicorn backend.app:app --reload --port $${PORT:-8000}"
+	@echo "Start frontend: PORT=$(PORT) npm run dev  (inside frontend/)"
