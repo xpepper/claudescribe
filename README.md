@@ -94,32 +94,31 @@ This builds the frontend and starts the server. Your browser will open automatic
 
 ---
 
-### 1. Install Python
+### 1. Install prerequisites
 
-Download the **Python 3.12** installer from [python.org/downloads](https://www.python.org/downloads/).
+**Option A — `winget` (fastest, Windows 10/11 built-in):**
 
-During installation:
-- **Check "Add python.exe to PATH"** on the first screen
-- Click "Install Now"
+```powershell
+winget install Python.Python.3.12
+winget install OpenJS.NodeJS.LTS
+winget install Git.Git
+```
 
-Verify in a new Command Prompt or PowerShell window:
+Restart your terminal after this, then verify:
 
 ```powershell
 python --version
-```
-
-### 2. Install Node.js
-
-Download the **LTS** installer from [nodejs.org](https://nodejs.org/).
-
-Run the installer with all defaults. Verify:
-
-```powershell
 node --version
 npm --version
 ```
 
-### 3. Clone the repository
+**Option B — manual download:**
+
+- Python: [python.org/downloads](https://www.python.org/downloads/) — check **"Add python.exe to PATH"** on the first screen
+- Node.js: [nodejs.org](https://nodejs.org/) — run the LTS installer with all defaults
+- Git: [git-scm.com](https://git-scm.com/) — run the installer with all defaults
+
+### 2. Clone the repository
 
 If you have Git installed:
 
@@ -130,7 +129,7 @@ cd claudescribe
 
 Or download the ZIP from GitHub and extract it.
 
-### 4. Create a Python virtual environment
+### 3. Create a Python virtual environment
 
 ```powershell
 python -m venv .venv
@@ -144,7 +143,7 @@ python -m venv .venv
 > Set-ExecutionPolicy -Scope CurrentUser RemoteSigned
 > ```
 
-### 5. Install dependencies and run
+### 4. Install dependencies and run
 
 Two batch scripts replace the `make` commands from the macOS instructions:
 
