@@ -49,15 +49,14 @@ jobs:
           $retries = 30
           $ready = $false
           for ($i = 1; $i -le $retries; $i++) {
-            try {
-              $response = Invoke-WebRequest -Uri $url -UseBasicParsing -TimeoutSec 2
+            $code = curl.exe -s -o NUL -w "%{http_code}" --max-time 2 --connect-timeout 2 $url 2>$null
+            if ($code -eq "200") {
               Write-Host "Server responded after $i second(s)"
               $ready = $true
               break
-            } catch {
-              Write-Host "Attempt $i/$retries — not ready yet"
-              Start-Sleep -Seconds 1
             }
+            Write-Host "Attempt $i/$retries — not ready yet (HTTP $code)"
+            Start-Sleep -Seconds 1
           }
           if (-not $ready) {
             Write-Host "--- server.log ---"
@@ -71,8 +70,7 @@ jobs:
       - name: Assert health endpoint
         shell: pwsh
         run: |
-          $response = Invoke-WebRequest -Uri "http://127.0.0.1:8000/api/health" -UseBasicParsing
-          $body = $response.Content
+          $body = curl.exe -s http://127.0.0.1:8000/api/health
           Write-Host "Response: $body"
           if ($body -notmatch '"status":\s*"ok"') {
             Write-Error "Health check failed: unexpected response body: $body"
