@@ -94,6 +94,8 @@ This builds the frontend and starts the server. Your browser will open automatic
 
 ---
 
+> **Tip:** Use [Windows Terminal](https://aka.ms/terminal) instead of the old `cmd.exe`. It handles virtual environment activation correctly, supports colour output, and lets you run multiple tabs side by side. Install it from the Microsoft Store or with `winget install Microsoft.WindowsTerminal`.
+
 ### 1. Install prerequisites
 
 **Option A — `winget` (fastest, Windows 10/11 built-in):**
