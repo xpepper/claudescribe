@@ -7,3 +7,4 @@ frontend/dist/
 node_modules/
 .worktrees/
 examples/
+.claude/settings.local.json

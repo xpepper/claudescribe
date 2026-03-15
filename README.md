@@ -96,6 +96,11 @@ This builds the frontend and starts the server. Your browser will open automatic
 
 > **Tip:** Use [Windows Terminal](https://aka.ms/terminal) instead of the old `cmd.exe`. It handles virtual environment activation correctly, supports colour output, and lets you run multiple tabs side by side. Install it from the Microsoft Store or with `winget install Microsoft.WindowsTerminal`.
 
+> **Important — PowerShell execution policy:** PowerShell blocks scripts by default. Run this once before anything else, or `npm` and the `.bat` scripts will fail with a "running scripts is disabled" error:
+> ```powershell
+> Set-ExecutionPolicy -Scope CurrentUser RemoteSigned
+> ```
+
 ### 1. Install prerequisites
 
 **Option A — `winget` (fastest, Windows 10/11 built-in):**
@@ -131,16 +136,7 @@ cd claudescribe
 
 Or download the ZIP from GitHub and extract it.
 
-### 3. Create a Python virtual environment
-
-```powershell
-python -m venv .venv
-.venv\Scripts\activate
-```
-
-> You'll need to run `.venv\Scripts\activate` each time you open a new terminal before starting the app.
-
-### 4. Install dependencies and run
+### 3. Install dependencies and run
 
 Two batch scripts replace the `make` commands from the macOS instructions:
 
@@ -168,13 +164,13 @@ If the error persists, you may have Python installed from the **Microsoft Store*
 
 **"running scripts is disabled on this system"**
 
-PowerShell blocks script execution by default. Run this once to allow user-installed scripts (including venv activation):
+You skipped the execution policy step above. Run this once:
 
 ```powershell
 Set-ExecutionPolicy -Scope CurrentUser RemoteSigned
 ```
 
-Then re-run `.venv\Scripts\activate` and continue.
+Then re-run the failed command.
 
 **`python` not found after installation**
 
@@ -183,6 +179,12 @@ Close and reopen Windows Terminal (or run `refreshenv` if you have Chocolatey). 
 **`winget` not available**
 
 `winget` ships with Windows 11 and most up-to-date Windows 10 installs. If it's missing, install the [App Installer](https://apps.microsoft.com/detail/9NBLGGH4NNS1) from the Microsoft Store, or use the manual download links in Option B above.
+
+**Running Windows on ARM (e.g. Surface Pro X, or a UTM/Parallels VM on Apple Silicon)**
+
+`ctranslate2` (a core dependency of faster-whisper) does not currently provide Windows ARM64 wheels. You must install the **x86-64 version of Python** instead — Windows ARM runs x86-64 applications via emulation and the x86-64 wheels will work correctly.
+
+Download the **"Windows installer (64-bit)"** from [python.org/downloads](https://www.python.org/downloads/) — that is the x86-64 build. Do not use the ARM64 installer or the Microsoft Store version. Then re-run `setup.bat`.
 
 ---
 
