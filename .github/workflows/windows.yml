@@ -37,10 +37,23 @@ jobs:
           }
           $proc = Start-Process .venv\Scripts\python.exe `
             -ArgumentList "-m", "uvicorn", "backend.app:app", "--host", "0.0.0.0", "--port", "8000" `
+            -WorkingDirectory $PWD `
+            -NoNewWindow `
             -RedirectStandardOutput server.log `
             -RedirectStandardError server-err.log `
             -PassThru
           "SERVER_PID=$($proc.Id.ToString().Trim())" | Out-File -FilePath $env:GITHUB_ENV -Append
+
+      - name: Check server is listening
+        shell: pwsh
+        run: |
+          Start-Sleep -Seconds 5
+          Write-Host "=== netstat port 8000 ==="
+          netstat -ano | Select-String ":8000"
+          Write-Host "=== python processes ==="
+          Get-Process python* 2>$null | Format-Table Id, ProcessName, HasExited -AutoSize
+          Write-Host "=== server-err.log ==="
+          if (Test-Path server-err.log) { Get-Content server-err.log }
 
       - name: Wait for server
         shell: pwsh
