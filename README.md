@@ -139,11 +139,6 @@ python -m venv .venv
 ```
 
 > You'll need to run `.venv\Scripts\activate` each time you open a new terminal before starting the app.
->
-> If you get an error about script execution policy, run this first:
-> ```powershell
-> Set-ExecutionPolicy -Scope CurrentUser RemoteSigned
-> ```
 
 ### 4. Install dependencies and run
 
@@ -162,6 +157,26 @@ This installs all Python and frontend dependencies and builds the frontend. You 
 This builds the frontend and starts the server. Your browser will open automatically at `http://localhost:8000`.
 
 > **Note:** If you prefer the `make` workflow, install [Make for Windows](https://gnuwin32.sourceforge.net/packages/make.htm) and `make install` / `make run` work the same as on macOS.
+
+### Troubleshooting — Windows
+
+**"running scripts is disabled on this system"**
+
+PowerShell blocks script execution by default. Run this once to allow user-installed scripts (including venv activation):
+
+```powershell
+Set-ExecutionPolicy -Scope CurrentUser RemoteSigned
+```
+
+Then re-run `.venv\Scripts\activate` and continue.
+
+**`python` not found after installation**
+
+Close and reopen Windows Terminal (or run `refreshenv` if you have Chocolatey). The PATH update from the installer only takes effect in new shell sessions.
+
+**`winget` not available**
+
+`winget` ships with Windows 11 and most up-to-date Windows 10 installs. If it's missing, install the [App Installer](https://apps.microsoft.com/detail/9NBLGGH4NNS1) from the Microsoft Store, or use the manual download links in Option B above.
 
 ---
 
