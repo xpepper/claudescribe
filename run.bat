@@ -12,8 +12,8 @@ call .venv\Scripts\activate.bat
 echo Building frontend...
 cd frontend
 npm run build
-if errorlevel 1 (
-    echo ERROR: Frontend build failed.
+if %errorlevel% neq 0 (
+    echo ERROR: Frontend build failed with code %errorlevel%.
     cd ..
     exit /b 1
 )
