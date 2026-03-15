@@ -101,9 +101,9 @@ This builds the frontend and starts the server. Your browser will open automatic
 **Option A — `winget` (fastest, Windows 10/11 built-in):**
 
 ```powershell
-winget install Python.Python.3.12
-winget install OpenJS.NodeJS.LTS
-winget install Git.Git
+winget install Python.Python.3.12 --source winget
+winget install OpenJS.NodeJS.LTS --source winget
+winget install Git.Git --source winget
 ```
 
 Restart your terminal after this, then verify:
