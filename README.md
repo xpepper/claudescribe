@@ -130,37 +130,23 @@ python -m venv .venv
 > Set-ExecutionPolicy -Scope CurrentUser RemoteSigned
 > ```
 
-### 5. Install Python dependencies
+### 5. Install dependencies and run
+
+Two batch scripts replace the `make` commands from the macOS instructions:
 
 ```powershell
-pip install -r requirements.txt
+.\setup.bat
 ```
 
-### 6. Install frontend dependencies
+This installs all Python and frontend dependencies and builds the frontend. You only need to run it once (or after pulling updates that change dependencies).
 
 ```powershell
-cd frontend
-npm install
-cd ..
+.\run.bat
 ```
 
-### 7. Build the frontend
+This builds the frontend and starts the server. Your browser will open automatically at `http://localhost:8000`.
 
-```powershell
-cd frontend
-npm run build
-cd ..
-```
-
-### 8. Run the app
-
-```powershell
-python main.py
-```
-
-Your browser will open automatically at `http://localhost:8000`.
-
-> **Note:** Windows does not have `make`, so you run the steps manually. If you install [Make for Windows](https://gnuwin32.sourceforge.net/packages/make.htm) or use [WSL](https://learn.microsoft.com/en-us/windows/wsl/), `make run` works the same as on macOS.
+> **Note:** If you prefer the `make` workflow, install [Make for Windows](https://gnuwin32.sourceforge.net/packages/make.htm) or use [WSL](https://learn.microsoft.com/en-us/windows/wsl/) — then `make install` and `make run` work exactly as on macOS.
 
 ---
 
