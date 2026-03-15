@@ -80,6 +80,20 @@ This builds the frontend and starts the server. Your browser will open automatic
 
 ## Installation — Windows
 
+> **Recommended: use WSL (Windows Subsystem for Linux)**
+>
+> WSL gives you a full Linux shell on Windows and lets you follow the **macOS instructions** exactly — `make install`, `make run`, GPU support, everything. It's the smoothest Windows experience and what most developers use.
+>
+> **One-time WSL setup** (run in PowerShell as Administrator):
+> ```powershell
+> wsl --install
+> ```
+> Restart when prompted, then open the **Ubuntu** app from the Start menu and follow the [macOS installation steps](#installation--macos) above.
+>
+> If you'd rather stay in native Windows (PowerShell / Command Prompt), continue with the steps below.
+
+---
+
 ### 1. Install Python
 
 Download the **Python 3.12** installer from [python.org/downloads](https://www.python.org/downloads/).
@@ -146,7 +160,7 @@ This installs all Python and frontend dependencies and builds the frontend. You 
 
 This builds the frontend and starts the server. Your browser will open automatically at `http://localhost:8000`.
 
-> **Note:** If you prefer the `make` workflow, install [Make for Windows](https://gnuwin32.sourceforge.net/packages/make.htm) or use [WSL](https://learn.microsoft.com/en-us/windows/wsl/) — then `make install` and `make run` work exactly as on macOS.
+> **Note:** If you prefer the `make` workflow, install [Make for Windows](https://gnuwin32.sourceforge.net/packages/make.htm) and `make install` / `make run` work the same as on macOS.
 
 ---
 
