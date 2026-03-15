@@ -6,9 +6,15 @@ echo === Claudescribe setup ===
 :: Create virtual environment
 echo.
 echo [1/4] Creating Python virtual environment...
+if exist .venv (
+    echo Removing existing .venv...
+    rmdir /s /q .venv
+)
 python -m venv .venv
 if errorlevel 1 (
     echo ERROR: Failed to create virtual environment. Is Python 3.10+ installed and on PATH?
+    echo If you installed Python from the Microsoft Store, try uninstalling it and
+    echo reinstalling from https://www.python.org/downloads/ instead.
     exit /b 1
 )
 

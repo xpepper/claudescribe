@@ -160,6 +160,12 @@ This builds the frontend and starts the server. Your browser will open automatic
 
 ### Troubleshooting — Windows
 
+**"permission denied" or "failed to create virtual environment" when running `setup.bat`**
+
+This usually means a leftover `.venv` folder from a previous attempt is locked. `setup.bat` removes it automatically before creating a new one. If it still fails, delete the `.venv` folder manually and run `setup.bat` again.
+
+If the error persists, you may have Python installed from the **Microsoft Store**. That version has restrictions that can prevent venv creation. Uninstall it and reinstall from [python.org/downloads](https://www.python.org/downloads/) instead.
+
 **"running scripts is disabled on this system"**
 
 PowerShell blocks script execution by default. Run this once to allow user-installed scripts (including venv activation):
