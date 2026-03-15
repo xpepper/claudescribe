@@ -57,10 +57,10 @@ Runner: `windows-latest`
 
 | Step | Action / Command | Failure means |
 |------|-----------------|---------------|
-| Start server | PowerShell `Start-Process python -ArgumentList main.py` | — |
-| Wait for server | Poll `http://localhost:8000/api/health` every 1s, up to 15 retries | Server failed to start |
+| Start server | PowerShell: `$proc = Start-Process .venv\Scripts\python.exe -ArgumentList main.py -PassThru`; persist PID across steps via `"SERVER_PID=$($proc.Id)" \| Out-File -FilePath $env:GITHUB_ENV -Append` | — |
+| Wait for server | Poll `http://localhost:8000/api/health` every 1s, up to 30 retries; fail with clear message on timeout | Server failed to start |
 | Assert health | Check response body contains `"status": "ok"` | API returned unexpected response |
-| Stop server | Kill the python process | — |
+| Stop server | `Stop-Process -Id $env:SERVER_PID -Force` | — |
 
 ---
 
@@ -69,11 +69,17 @@ Runner: `windows-latest`
 **Pre-install Python and Node via Actions:**
 `setup.bat` assumes Python and Node are already on PATH (it does not call `winget`). The GitHub Actions setup steps fulfil this assumption without modification to the script, keeping the script identical to what a real user runs.
 
+**Venv activation does not persist across steps:**
+`setup.bat` calls `.venv\Scripts\activate.bat` internally, but each GitHub Actions step runs in a fresh shell — that activation is lost. All subsequent steps that need venv packages must therefore invoke `.venv\Scripts\python.exe` directly rather than the system `python`. This applies to starting the server in Phase 2.
+
 **`/api/health` as smoke target:**
 The endpoint exists in `backend/app.py` and returns `{"status": "ok"}`. It exercises server startup, the lifespan hook, and the FastAPI routing layer without requiring an audio file or GPU.
 
 **`webbrowser.open()` on headless runner:**
 `main.py` calls `webbrowser.open()` via a timer thread. On a headless runner this call fails silently — the server continues to start normally. No changes to `main.py` are needed.
+
+**30-retry poll budget:**
+Cold `windows-latest` runners can be slow to start uvicorn due to heavy import chains (pydantic-core, fastapi). 15 retries has been observed to be flaky in similar stacks. 30 retries (30s maximum wait) is used instead. On timeout the step explicitly fails with a clear message before reaching the assert step, avoiding confusing "connection refused" errors.
 
 **Single job (not two jobs):**
 A second job would spin up a fresh runner, requiring `setup.bat` to run again with no benefit. All steps run sequentially in one job, making Phase 2 trivially addable later.
