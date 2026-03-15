@@ -180,11 +180,23 @@ Close and reopen Windows Terminal (or run `refreshenv` if you have Chocolatey). 
 
 `winget` ships with Windows 11 and most up-to-date Windows 10 installs. If it's missing, install the [App Installer](https://apps.microsoft.com/detail/9NBLGGH4NNS1) from the Microsoft Store, or use the manual download links in Option B above.
 
+**`ctranslate2.dll` not found / app crashes on startup**
+
+`ctranslate2` requires the Microsoft Visual C++ Redistributable runtime. On a fresh Windows install it is often missing. Download and run the installer:
+
+```
+https://aka.ms/vs/17/release/vc_redist.x64.exe
+```
+
+Restart your terminal and run `python main.py` again.
+
 **Running Windows on ARM (e.g. Surface Pro X, or a UTM/Parallels VM on Apple Silicon)**
 
 `ctranslate2` (a core dependency of faster-whisper) does not currently provide Windows ARM64 wheels. You must install the **x86-64 version of Python** instead — Windows ARM runs x86-64 applications via emulation and the x86-64 wheels will work correctly.
 
 Download the **"Windows installer (64-bit)"** from [python.org/downloads](https://www.python.org/downloads/) — that is the x86-64 build. Do not use the ARM64 installer or the Microsoft Store version. Then re-run `setup.bat`.
+
+You will also need the Visual C++ Redistributable — see the `ctranslate2.dll` entry above.
 
 ---
 
