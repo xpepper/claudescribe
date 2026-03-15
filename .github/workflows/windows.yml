@@ -39,8 +39,6 @@ jobs:
           $proc = Start-Process .venv\Scripts\python.exe `
             -ArgumentList "-m", "uvicorn", "backend.app:app", "--host", "0.0.0.0", "--port", "8000" `
             -WorkingDirectory $PWD `
-            -RedirectStandardOutput server.log `
-            -RedirectStandardError server-err.log `
             -PassThru
           "SERVER_PID=$($proc.Id.ToString().Trim())" | Out-File -FilePath $env:GITHUB_ENV -Append
 
@@ -52,8 +50,8 @@ jobs:
           netstat -ano | Select-String ":8000"
           Write-Host "=== python processes ==="
           Get-Process python* 2>$null | Format-Table Id, ProcessName, HasExited -AutoSize
-          Write-Host "=== server-err.log ==="
-          if (Test-Path server-err.log) { Get-Content server-err.log }
+          Write-Host "=== SERVER_PID check ==="
+          Get-Process -Id $env:SERVER_PID -ErrorAction SilentlyContinue | Format-Table Id, ProcessName, HasExited
 
       - name: Wait for server
         shell: pwsh
@@ -72,10 +70,6 @@ jobs:
             Start-Sleep -Seconds 1
           }
           if (-not $ready) {
-            Write-Host "--- server.log ---"
-            if (Test-Path server.log) { Get-Content server.log }
-            Write-Host "--- server-err.log ---"
-            if (Test-Path server-err.log) { Get-Content server-err.log }
             Write-Error "Server did not respond after $retries seconds"
             exit 1
           }
@@ -99,5 +93,3 @@ jobs:
             Stop-Process -Id ([int]$env:SERVER_PID.Trim()) -Force -ErrorAction SilentlyContinue
             Write-Host "Stopped server process $($env:SERVER_PID.Trim())"
           }
-          if (Test-Path server.log) { Write-Host "--- server.log ---"; Get-Content server.log }
-          if (Test-Path server-err.log) { Write-Host "--- server-err.log ---"; Get-Content server-err.log }
