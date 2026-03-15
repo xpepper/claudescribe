@@ -35,10 +35,10 @@ jobs:
             Write-Error "venv not found — did setup.bat succeed?"
             exit 1
           }
+          New-NetFirewallRule -DisplayName "Claudescribe CI" -Direction Inbound -Protocol TCP -LocalPort 8000 -Action Allow -Profile Any -ErrorAction SilentlyContinue | Out-Null
           $proc = Start-Process .venv\Scripts\python.exe `
             -ArgumentList "-m", "uvicorn", "backend.app:app", "--host", "0.0.0.0", "--port", "8000" `
             -WorkingDirectory $PWD `
-            -NoNewWindow `
             -RedirectStandardOutput server.log `
             -RedirectStandardError server-err.log `
             -PassThru
@@ -62,7 +62,7 @@ jobs:
           $retries = 30
           $ready = $false
           for ($i = 1; $i -le $retries; $i++) {
-            $code = curl.exe -s -o NUL -w "%{http_code}" --max-time 2 --connect-timeout 2 $url 2>$null
+            $code = curl.exe --noproxy "*" -s -o NUL -w "%{http_code}" --max-time 2 --connect-timeout 2 $url 2>$null
             if ($code -eq "200") {
               Write-Host "Server responded after $i second(s)"
               $ready = $true
@@ -83,7 +83,7 @@ jobs:
       - name: Assert health endpoint
         shell: pwsh
         run: |
-          $body = curl.exe -s http://127.0.0.1:8000/api/health
+          $body = curl.exe --noproxy "*" -s http://127.0.0.1:8000/api/health
           Write-Host "Response: $body"
           if ($body -notmatch '"status":\s*"ok"') {
             Write-Error "Health check failed: unexpected response body: $body"
