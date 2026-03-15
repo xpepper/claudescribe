@@ -31,26 +31,42 @@ jobs:
       - name: Start server
         shell: pwsh
         run: |
-          $proc = Start-Process .venv\Scripts\python.exe -ArgumentList main.py -PassThru
-          "SERVER_PID=$($proc.Id)" | Out-File -FilePath $env:GITHUB_ENV -Append
+          if (-not (Test-Path .venv\Scripts\python.exe)) {
+            Write-Error "venv not found — did setup.bat succeed?"
+            exit 1
+          }
+          $proc = Start-Process .venv\Scripts\python.exe `
+            -ArgumentList main.py `
+            -RedirectStandardOutput server.log `
+            -RedirectStandardError server-err.log `
+            -PassThru
+          "SERVER_PID=$($proc.Id.ToString().Trim())" | Out-File -FilePath $env:GITHUB_ENV -Append
 
       - name: Wait for server
         shell: pwsh
         run: |
           $url = "http://localhost:8000/api/health"
           $retries = 30
+          $ready = $false
           for ($i = 1; $i -le $retries; $i++) {
             try {
               $response = Invoke-WebRequest -Uri $url -UseBasicParsing -TimeoutSec 2
               Write-Host "Server responded after $i second(s)"
-              exit 0
+              $ready = $true
+              break
             } catch {
               Write-Host "Attempt $i/$retries — not ready yet"
               Start-Sleep -Seconds 1
             }
           }
-          Write-Error "Server did not respond after $retries seconds"
-          exit 1
+          if (-not $ready) {
+            Write-Host "--- server.log ---"
+            if (Test-Path server.log) { Get-Content server.log }
+            Write-Host "--- server-err.log ---"
+            if (Test-Path server-err.log) { Get-Content server-err.log }
+            Write-Error "Server did not respond after $retries seconds"
+            exit 1
+          }
 
       - name: Assert health endpoint
         shell: pwsh
@@ -69,6 +85,8 @@ jobs:
         shell: pwsh
         run: |
           if ($env:SERVER_PID) {
-            Stop-Process -Id $env:SERVER_PID -Force -ErrorAction SilentlyContinue
-            Write-Host "Stopped server process $env:SERVER_PID"
+            Stop-Process -Id ([int]$env:SERVER_PID.Trim()) -Force -ErrorAction SilentlyContinue
+            Write-Host "Stopped server process $($env:SERVER_PID.Trim())"
           }
+          if (Test-Path server.log) { Write-Host "--- server.log ---"; Get-Content server.log }
+          if (Test-Path server-err.log) { Write-Host "--- server-err.log ---"; Get-Content server-err.log }
