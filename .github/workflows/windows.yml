@@ -45,7 +45,7 @@ jobs:
       - name: Wait for server
         shell: pwsh
         run: |
-          $url = "http://localhost:8000/api/health"
+          $url = "http://127.0.0.1:8000/api/health"
           $retries = 30
           $ready = $false
           for ($i = 1; $i -le $retries; $i++) {
@@ -71,7 +71,7 @@ jobs:
       - name: Assert health endpoint
         shell: pwsh
         run: |
-          $response = Invoke-WebRequest -Uri "http://localhost:8000/api/health" -UseBasicParsing
+          $response = Invoke-WebRequest -Uri "http://127.0.0.1:8000/api/health" -UseBasicParsing
           $body = $response.Content
           Write-Host "Response: $body"
           if ($body -notmatch '"status":\s*"ok"') {
