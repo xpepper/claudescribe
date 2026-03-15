@@ -27,3 +27,48 @@ jobs:
       - name: Run setup.bat
         shell: cmd
         run: setup.bat
+
+      - name: Start server
+        shell: pwsh
+        run: |
+          $proc = Start-Process .venv\Scripts\python.exe -ArgumentList main.py -PassThru
+          "SERVER_PID=$($proc.Id)" | Out-File -FilePath $env:GITHUB_ENV -Append
+
+      - name: Wait for server
+        shell: pwsh
+        run: |
+          $url = "http://localhost:8000/api/health"
+          $retries = 30
+          for ($i = 1; $i -le $retries; $i++) {
+            try {
+              $response = Invoke-WebRequest -Uri $url -UseBasicParsing -TimeoutSec 2
+              Write-Host "Server responded after $i second(s)"
+              exit 0
+            } catch {
+              Write-Host "Attempt $i/$retries — not ready yet"
+              Start-Sleep -Seconds 1
+            }
+          }
+          Write-Error "Server did not respond after $retries seconds"
+          exit 1
+
+      - name: Assert health endpoint
+        shell: pwsh
+        run: |
+          $response = Invoke-WebRequest -Uri "http://localhost:8000/api/health" -UseBasicParsing
+          $body = $response.Content
+          Write-Host "Response: $body"
+          if ($body -notmatch '"status":\s*"ok"') {
+            Write-Error "Health check failed: unexpected response body: $body"
+            exit 1
+          }
+          Write-Host "Health check passed"
+
+      - name: Stop server
+        if: always()
+        shell: pwsh
+        run: |
+          if ($env:SERVER_PID) {
+            Stop-Process -Id $env:SERVER_PID -Force -ErrorAction SilentlyContinue
+            Write-Host "Stopped server process $env:SERVER_PID"
+          }
