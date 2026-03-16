@@ -219,7 +219,31 @@ Claudescribe detects your hardware automatically and picks the best settings. No
 
 ### Apple Silicon (M1 / M2 / M3 / M4)
 
-**Nothing extra to install.** CTranslate2 (the engine behind faster-whisper) ships with an ARM64-optimised build that uses Apple's Accelerate framework automatically. You'll get significantly faster transcription than on an Intel Mac with no extra steps.
+By default, Claudescribe runs on CPU using CTranslate2's ARM64-optimised build (Apple Accelerate framework). This is already faster than Intel, and requires no extra steps.
+
+**Optional: enable Metal GPU acceleration (experimental)**
+
+This branch includes experimental support for [mlx-whisper](https://github.com/ml-explore/mlx-examples/tree/main/whisper), which runs inference on the GPU cores built into Apple Silicon via Apple's MLX framework. To try it:
+
+```bash
+pip install mlx-whisper
+make run
+```
+
+That's it — Claudescribe detects `mlx-whisper` automatically and uses the Metal GPU. No other config needed.
+
+**What to expect:**
+- Faster transcription, especially on `large-v3` and `turbo` models
+- The progress bar jumps from 0% to 100% on completion instead of filling gradually — mlx-whisper processes the whole file at once, so there is no incremental progress to report
+- Models are downloaded from Hugging Face (`mlx-community/whisper-*`) on first use, separately from the faster-whisper model cache
+
+**To go back to CPU**, uninstall it:
+
+```bash
+pip uninstall mlx-whisper
+```
+
+> **Note:** `mlx-whisper` is Apple-only. Do not install it on Windows or Linux.
 
 ### NVIDIA GPU (Windows or Linux)
 
